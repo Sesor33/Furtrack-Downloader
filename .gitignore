@@ -161,4 +161,5 @@ cython_debug/
 
 # Ensure that actual CSVs and images aren't included
 *.csv
+*.arc
 images/
