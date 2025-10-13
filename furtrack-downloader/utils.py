@@ -30,8 +30,11 @@ def load_progress(filename=PROGRESS_FILE_PATH):
 			progress_content = progress_file.read()
 			if progress_content:
 				progress_file.close()
-				return int(progress_content.strip())
+				progress_val = int(progress_content.strip())
+				print(f'Progress file found! Starting from: {progress_val}')
+				return progress_val
 			else:
+				print(f'No progress file found, starting from {CURRENT_INDEX}')
 				return None
 	except Exception as e:
 		print(f"Error loading progress file: {e}")
@@ -44,6 +47,7 @@ def save_progress(index, filename=PROGRESS_FILE_PATH):
 		with open(filename, 'w') as progress_file:
 			progress_file.write(str(index + 1))
 			progress_file.close()
+			print("Progress saved!")
 			return True
 	except Exception as e:
 		print(f"Error saving progress file: {e}")
@@ -54,7 +58,6 @@ def save_progress(index, filename=PROGRESS_FILE_PATH):
 def cleanup(csv_file, index):
 	csv_file.close()
 	save_progress(index)
-	print("Progress saved!")
 	return
 
 
@@ -79,14 +82,14 @@ def get_max_index():
 
 
 def csv_generator():
-	# Attempt to load progress
+	# attempt to load progress
 	CURRENT_INDEX = load_progress()
 	CURRENT_MAX_INDEX = get_max_index()
 
-	# Initialize browser options
+	# initialize browser options
 	chrome_options = uc.ChromeOptions()
 	
-	# Initialize browser
+	# initialize browser
 	driver = uc.Chrome(options=chrome_options)
 
 	csv_file_is_new = not os.path.exists(CSV_FILE_PATH)
@@ -99,7 +102,7 @@ def csv_generator():
 			for index in range(CURRENT_INDEX, CURRENT_MAX_INDEX):
 				# Navigate to URL
 				driver.get(BASE_URL.format(index))
-				time.sleep(random.uniform(1, 3))
+				time.sleep(random.uniform(0.1, 0.2)) # so js loads
 				
 				# Wait for JS to execute and parse the page source with BeautifulSoup
 				soup = BeautifulSoup(driver.page_source, 'html5lib')
@@ -113,10 +116,7 @@ def csv_generator():
 				if image_tag and characters:
 					writer.writerow([str(index), image_tag['content'], ','.join(characters)])
 				
-				# Output progress to console
 				print(f"Processed {index} of {CURRENT_MAX_INDEX}")
-
-				time.sleep(random.uniform(0.2, 0.5))
 
 		except KeyboardInterrupt:
 			print("Downloader is shutting down...")
@@ -129,7 +129,7 @@ def csv_generator():
 			end_program()
 		
 		finally:
-			# Clean up
+			# clean up
 			driver.quit()
 			csv_file.close()
 
@@ -142,7 +142,7 @@ def downloader():
 def main():
 	while True:
 		try:
-			option_input = input("Enter '1' to start downloading, '2' to run downloader, and '3' or CTRL+C to exit> ")
+			option_input = input("Enter '1' to build CSV, '2' to run downloader, and '3' or CTRL+C to exit> ")
 			option_input = int(option_input)
 			match option_input:
 				case 1:
