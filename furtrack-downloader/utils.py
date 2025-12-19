@@ -38,8 +38,8 @@ def load_progress(filename=PROGRESS_FILE_PATH):
 				return None
 	except Exception as e:
 		print(f"Error loading progress file: {e}")
-		progress_file.close()
-		return None
+		#progress_file.close()
+		return 1
 
 
 def save_progress(index, filename=PROGRESS_FILE_PATH):
