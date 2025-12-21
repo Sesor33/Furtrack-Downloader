@@ -38,7 +38,7 @@ def load_progress(filename=PROGRESS_FILE_PATH):
 				return None
 	except Exception as e:
 		print(f"Error loading progress file: {e}")
-		#progress_file.close()
+
 		return 1
 
 
@@ -88,6 +88,10 @@ def csv_generator():
 
 	# initialize browser options
 	chrome_options = uc.ChromeOptions()
+
+	# disable image loading
+	prefs = {"profile.managed_default_content_settings.images": 2}
+	chrome_options.add_experimental_option("prefs", prefs)
 	
 	# initialize browser
 	driver = uc.Chrome(options=chrome_options)
