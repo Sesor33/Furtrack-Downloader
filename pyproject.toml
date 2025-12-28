@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "furtrack-downloader"
+version = "0.1"
+description = "A scraper and downloader for furtrack tags and images"
+authors = [
+    { name = "Tech Coyote" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "undetected-chromedriver",
+    "beautifulsoup4",
+    "selenium",
+    "html5lib"
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/furtrack-downloader"
+Repository = "https://github.com/yourusername/furtrack-downloader"

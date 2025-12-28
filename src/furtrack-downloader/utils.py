@@ -7,51 +7,11 @@ from selenium import webdriver
 import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
 
-# Constants
-CSV_HEADERS = ["index", "image_url", "character_tags"] 
-CSV_FILE_PATH = "furtrack_image_lib.csv"
-PROGRESS_FILE_PATH = "progress.arc"
-BASE_URL = "https://www.furtrack.com/p/{}"
-CURRENT_INDEX = 10
-CURRENT_MAX_INDEX = 1000000
-
-
 def check_csv_for_data(reader):
 	try:
 		next(reader) 
 		return True
 	except StopIteration:
-		return False
-
-
-def load_progress(filename=PROGRESS_FILE_PATH):
-	try:
-		with open(filename, 'r') as progress_file:
-			progress_content = progress_file.read()
-			if progress_content:
-				progress_file.close()
-				progress_val = int(progress_content.strip())
-				print(f'Progress file found! Starting from: {progress_val}')
-				return progress_val
-			else:
-				print(f'No progress file found, starting from {CURRENT_INDEX}')
-				return None
-	except Exception as e:
-		print(f"Error loading progress file: {e}")
-
-		return 1
-
-
-def save_progress(index, filename=PROGRESS_FILE_PATH):
-	try:
-		with open(filename, 'w') as progress_file:
-			progress_file.write(str(index + 1))
-			progress_file.close()
-			print("Progress saved!")
-			return True
-	except Exception as e:
-		print(f"Error saving progress file: {e}")
-		progress_file.close()
 		return False
 
 
@@ -61,17 +21,12 @@ def cleanup(csv_file, index):
 	return
 
 
-def end_program(exit_code=0):
-	print("Goodbye!")
-	sys.exit(exit_code)
-
-
 def get_max_index():
 	while True:
 		try:
 			user_input = input("Enter the maximum index to process (or press Enter for default): ")
 			if not user_input:
-				return CURRENT_MAX_INDEX
+				return DEFAULT_MAX_INDEX
 			else:
 				return int(user_input)
 		except ValueError:
@@ -84,7 +39,7 @@ def get_max_index():
 def csv_generator():
 	# attempt to load progress
 	CURRENT_INDEX = load_progress()
-	CURRENT_MAX_INDEX = get_max_index()
+	DEFAULT_MAX_INDEX = get_max_index()
 
 	# initialize browser options
 	chrome_options = uc.ChromeOptions()
@@ -103,7 +58,7 @@ def csv_generator():
 			writer.writerow(CSV_HEADERS)
 
 		try:
-			for index in range(CURRENT_INDEX, CURRENT_MAX_INDEX):
+			for index in range(CURRENT_INDEX, DEFAULT_MAX_INDEX):
 				# Navigate to URL
 				driver.get(BASE_URL.format(index))
 				time.sleep(random.uniform(0.1, 0.2)) # so js loads
@@ -120,7 +75,7 @@ def csv_generator():
 				if image_tag and characters:
 					writer.writerow([str(index), image_tag['content'], ','.join(characters)])
 				
-				print(f"Processed {index} of {CURRENT_MAX_INDEX}")
+				print(f"Processed {index} of {DEFAULT_MAX_INDEX}")
 
 		except KeyboardInterrupt:
 			print("Downloader is shutting down...")
