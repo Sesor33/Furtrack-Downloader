@@ -32,4 +32,9 @@ def save_progress(index, filename=PROGRESS_FILE_PATH):
         return True
     except OSError as e:
         print(f"Error saving progress: {e}")
+        # temp file cleanup in case weirdness happens
+        try:
+            os.remove(temp_filename)
+        except OSError:
+            pass
         return False

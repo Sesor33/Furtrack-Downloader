@@ -23,8 +23,7 @@ def create_driver():
 
 def scrape_page(driver, index):
     driver.get(BASE_URL.format(index))
-    time.sleep(random.uniform(0.1, 0.2))
-
+    
     soup = BeautifulSoup(driver.page_source, "html5lib")
 
     image_tag = soup.find("meta", {"property": "og:image"})
