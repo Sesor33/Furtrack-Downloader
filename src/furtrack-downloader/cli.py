@@ -1,16 +1,22 @@
 import sys
+import logging
 from .scraper import build_csv
 from .downloader import download
 from .config import DEFAULT_MAX_INDEX
+from .logging_config import setup_logging
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 def end_program(exit_code=0):
 	print("Goodbye!")
+	logger.info(f"Program exited with code {exit_code}")
 	sys.exit(exit_code)
 
 def main():
 	while True:
 		try:
-			option_input = input("Enter '1' to build CSV, '2' to run downloader, and '3' or CTRL+C to exit> ")
+			option_input = input("Enter '1' to scrape tags, '2' to run downloader, and '3' or CTRL+C to exit> ")
 			option_input = int(option_input)
 			match option_input:
 				case 1:
@@ -29,5 +35,6 @@ def main():
 			print("Invalid Input, please enter a valid input")
 
 		except KeyboardInterrupt:
+			logger.info("Keyboard interrupt received, exiting program")
 			end_program()
 
