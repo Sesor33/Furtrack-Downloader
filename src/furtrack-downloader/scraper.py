@@ -1,9 +1,11 @@
+import sys
 import time
 import random
 import logging
 import undetected_chromedriver as uc
+from urllib3.exceptions import MaxRetryError, ReadTimeoutError
+from selenium.common.exceptions import InvalidSessionIdException, NoSuchWindowException
 from bs4 import BeautifulSoup
-from .logging_config import setup_logging
 from .progress import load_progress, save_progress
 from .csv_handler import open_csv
 from .config import BASE_URL, DEFAULT_MAX_INDEX
@@ -22,17 +24,37 @@ def create_driver():
 
 
 def scrape_page(driver, index):
-    driver.get(BASE_URL.format(index))
-    
-    soup = BeautifulSoup(driver.page_source, "html5lib")
+    try:
+        driver.get(BASE_URL.format(index))
+        time.sleep(random.uniform(0.1, 0.2)) # so js loads
 
-    image_tag = soup.find("meta", {"property": "og:image"})
-    characters = [div.text.strip() for div in soup.find_all("div", {"class": "plz-tag-primary character"})]
+        soup = BeautifulSoup(driver.page_source, "html5lib")
 
-    if image_tag and characters:
-        return image_tag["content"], characters
+        image_tag = soup.find("meta", {"property": "og:image"})
+        characters = [div.text.strip() for div in soup.find_all("div", {"class": "plz-tag-primary character"})]
 
-    return None, None
+        if image_tag and characters:
+            return image_tag["content"], characters
+
+        return None, None
+    except MaxRetryError as e:
+        logger.error(f"Max retries exceeded for index {index}: {e}")
+        return None, None
+    # closing my laptop causes this, ensure it ends program without exploding the logs
+    except InvalidSessionIdException as e:
+        logger.error(f"Invalid session for index {index}: {e}")
+        sys.exit(1)
+    # tries to handle a weird error where the Chrome window will hang
+    except ReadTimeoutError as e:
+        logger.error(f"Read timeout for index {index}: {e}")
+        raise
+    except NoSuchWindowException as e:
+        logger.error(f"No such window for index {index}: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Error scraping index {index}: {e}")
+        return None, None
+
 
 def build_csv(max_index=DEFAULT_MAX_INDEX):
     start_index = load_progress()
@@ -49,6 +71,16 @@ def build_csv(max_index=DEFAULT_MAX_INDEX):
 
             save_progress(index)
             logger.debug(f"Progress saved at index: {index}")
+    # recreate driver on timeout
+    except ReadTimeoutError as e:
+        logger.error(f"Recreating driver due to timeout: {e}")
+        driver.quit()
+        driver = create_driver()
+    # handle closed window by recreating driver
+    except NoSuchWindowException as e:
+        logger.error(f"Recreating driver due to closed window: {e}")
+        driver.quit()
+        driver = create_driver()
     finally:
         driver.quit()
         logger.info("Webdriver closed")
