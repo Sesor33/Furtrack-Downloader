@@ -23,7 +23,7 @@ def main():
 					max_index = input("Enter max index (or press Enter for default): ")
 					if not max_index.strip():
 						max_index = DEFAULT_MAX_INDEX
-					build_csv(max_index)
+					build_csv(int(max_index))
 				case 2:
 					download()
 				case 3:
