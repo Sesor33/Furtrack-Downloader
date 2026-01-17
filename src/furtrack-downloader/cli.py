@@ -1,7 +1,7 @@
 import sys
 import logging
 from .scraper import build_csv
-from .downloader import download
+from .downloader import downloader
 from .config import DEFAULT_MAX_INDEX
 from .logging_config import setup_logging
 
@@ -25,7 +25,7 @@ def main():
 						max_index = DEFAULT_MAX_INDEX
 					build_csv(int(max_index))
 				case 2:
-					download()
+					downloader()
 				case 3:
 					end_program()
 				case _:

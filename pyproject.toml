@@ -15,9 +15,10 @@ dependencies = [
     "undetected-chromedriver",
     "beautifulsoup4",
     "selenium",
-    "html5lib"
+    "html5lib",
+    "pandas"
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/furtrack-downloader"
-Repository = "https://github.com/yourusername/furtrack-downloader"
+Homepage = "https://github.com/sesor33/furtrack-downloader"
+Repository = "https://github.com/sesor33/furtrack-downloader"

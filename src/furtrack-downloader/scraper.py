@@ -7,7 +7,7 @@ from urllib3.exceptions import MaxRetryError, ReadTimeoutError, NewConnectionErr
 from selenium.common.exceptions import InvalidSessionIdException, NoSuchWindowException
 from bs4 import BeautifulSoup
 from .progress import load_progress, save_progress
-from .csv_handler import open_csv
+from .csv_handler import open_csv_write
 from .config import BASE_URL, DEFAULT_MAX_INDEX
 
 def init_logger():
@@ -60,7 +60,7 @@ def scrape_page(driver, index, retries=0):
 def build_csv(max_index=DEFAULT_MAX_INDEX):
 	start_index = load_progress()
 	driver = create_driver()
-	csv_file, writer = open_csv()
+	csv_file, writer = open_csv_write()
 
 	try:
 		for index in range(start_index, max_index+1):
