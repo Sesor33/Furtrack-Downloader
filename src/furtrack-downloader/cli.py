@@ -8,6 +8,7 @@ from .logging_config import setup_logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
+
 def end_program(exit_code=0):
 	print("Goodbye!")
 	logger.info(f"Program exited with code {exit_code}")
@@ -25,6 +26,7 @@ def main():
 						max_index = DEFAULT_MAX_INDEX
 					build_csv(int(max_index))
 				case 2:
+					logger.info("Starting downloader...")
 					downloader()
 				case 3:
 					end_program()

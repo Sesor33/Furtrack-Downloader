@@ -17,6 +17,10 @@ def open_csv_write():
 def open_csv_read():
 	if not os.path.exists(CSV_FILE_PATH):
 		return None
+	# skip bad lines to avoid crashing
+	df = pd.read_csv(CSV_FILE_PATH, on_bad_lines='skip')
 
-	df = pd.read_csv(CSV_FILE_PATH)
+	if df.empty:
+		return None
+	
 	return df
