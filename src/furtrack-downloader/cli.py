@@ -2,7 +2,7 @@ import sys
 import logging
 from .scraper import build_csv
 from .downloader import downloader
-from .config import DEFAULT_MAX_INDEX
+from .config import DEFAULT_MAX_SCRAPING_INDEX, DEFAULT_MAX_DOWNLOAD_INDEX
 from .logging_config import setup_logging
 
 setup_logging()
@@ -23,15 +23,19 @@ def main():
 				case 1:
 					max_index = input("Enter max index (or press Enter for default): ")
 					if not max_index.strip():
-						max_index = DEFAULT_MAX_INDEX
+						max_index = DEFAULT_MAX_SCRAPING_INDEX
 					build_csv(int(max_index))
 				case 2:
+					max_index = input("Enter max download index (or press Enter for default): ")
+					if not max_index.strip():
+						max_index = DEFAULT_MAX_DOWNLOAD_INDEX
 					logger.info("Starting downloader...")
 					downloader()
 				case 3:
 					end_program()
 				case _:
 					print("Invalid Input, please enter a valid input")
+					logger.debug(f"User entered invalid menu option: {option_input}")
 
 		except ValueError:
 			print("Invalid Input, please enter a valid input")

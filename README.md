@@ -58,7 +58,7 @@ Edit [`src/furtrack-downloader/config.py`](src/furtrack-downloader/config.py) to
 
 - `BASE_URL` - FurTrack URL format
 - `DEFAULT_START_INDEX` - Starting index for scraping (default: 10)
-- `DEFAULT_MAX_INDEX` - Maximum index to scrape (default: 1,000,000)
+- `DEFAULT_MAX_SCRAPING_INDEX` - Maximum index to scrape (default: 1,000,000)
 - `CSV_FILE_PATH` - Output CSV file location
 - `PROGRESS_FILE_PATH` - Progress tracking file location
 

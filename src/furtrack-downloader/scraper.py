@@ -3,12 +3,12 @@ import time
 import random
 import logging
 import undetected_chromedriver as uc
-from urllib3.exceptions import MaxRetryError, ReadTimeoutError, NewConnectionError
+from urllib3.exceptions import MaxRetryError, ReadTimeoutError
 from selenium.common.exceptions import InvalidSessionIdException, NoSuchWindowException
 from bs4 import BeautifulSoup
 from .progress import load_progress, save_progress
 from .csv_handler import open_csv_write
-from .config import BASE_URL, DEFAULT_MAX_INDEX
+from .config import BASE_URL, DEFAULT_MAX_SCRAPING_INDEX
 
 def init_logger():
 	return logging.getLogger(__name__)
@@ -57,7 +57,7 @@ def scrape_page(driver, index, retries=0):
 		return None, None
 
 
-def build_csv(max_index=DEFAULT_MAX_INDEX):
+def build_csv(max_index=DEFAULT_MAX_SCRAPING_INDEX):
 	start_index = load_progress()
 	driver = create_driver()
 	csv_file, writer = open_csv_write()
