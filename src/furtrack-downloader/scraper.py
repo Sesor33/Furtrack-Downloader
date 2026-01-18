@@ -10,10 +10,12 @@ from .progress import load_progress, save_progress
 from .csv_handler import open_csv_write
 from .config import BASE_URL, DEFAULT_MAX_SCRAPING_INDEX
 
+
 def init_logger():
 	return logging.getLogger(__name__)
 
 logger = init_logger()
+
 
 def restart_driver(driver):
 	driver.quit()
