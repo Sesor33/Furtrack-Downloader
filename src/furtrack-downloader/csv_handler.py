@@ -1,0 +1,26 @@
+import pandas as pd
+import csv
+import os
+from .config import CSV_HEADERS, CSV_FILE_PATH
+
+def open_csv_write():
+	is_new = not os.path.exists(CSV_FILE_PATH)
+	csv_file = open(CSV_FILE_PATH, "a+", encoding="utf-8", newline="")
+	writer = csv.writer(csv_file)
+
+	if is_new:
+		writer.writerow(CSV_HEADERS)
+
+	return csv_file, writer
+
+# read from CSV but skip header using pandas
+def open_csv_read():
+	if not os.path.exists(CSV_FILE_PATH):
+		return None
+	# skip bad lines to avoid crashing
+	df = pd.read_csv(CSV_FILE_PATH, on_bad_lines='skip')
+
+	if df.empty:
+		return None
+	
+	return df
