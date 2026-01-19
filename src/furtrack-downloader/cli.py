@@ -30,7 +30,7 @@ def main():
 					if not max_index.strip():
 						max_index = DEFAULT_MAX_DOWNLOAD_INDEX
 					logger.info("Starting downloader...")
-					downloader()
+					downloader(int(max_index))
 				case 3:
 					end_program()
 				case _:

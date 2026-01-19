@@ -5,6 +5,7 @@ A Python-based web scraper and image downloader for FurTrack. This tool allows y
 ## Features
 
 - **Web Scraping**: Extracts character tags and image URLs from FurTrack pages using an undetected Chrome driver
+- **Image Downloading**: Downloads images with automatic retry logic and session recovery
 - **Progress Tracking**: Automatically saves your progress, allowing you to resume from where you left off
 - **CSV Export**: Stores scraped data in a structured CSV format
 - **Logging**: Comprehensive logging to both console and file
@@ -21,7 +22,7 @@ A Python-based web scraper and image downloader for FurTrack. This tool allows y
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/furtrack-downloader.git
+git clone https://github.com/sesor33/furtrack-downloader.git
 cd furtrack-downloader
 ```
 
@@ -48,7 +49,10 @@ python -m furtrack_downloader
    - Specify a maximum index (or press Enter for default: 1,000,000)
    - Progress is automatically saved and can be resumed
 
-2. **Run Downloader** - Download images (feature in development)
+2. **Run Downloader** - Download images to your selected directory
+   - Specify a maximum download index (or press Enter for default)
+   - Select a directory to save downloaded images and sidecar metadata files
+   - Progress is automatically saved and can be resumed
 
 3. **Exit** - Close the application
 
@@ -59,8 +63,10 @@ Edit [`src/furtrack-downloader/config.py`](src/furtrack-downloader/config.py) to
 - `BASE_URL` - FurTrack URL format
 - `DEFAULT_START_INDEX` - Starting index for scraping (default: 10)
 - `DEFAULT_MAX_SCRAPING_INDEX` - Maximum index to scrape (default: 1,000,000)
+- `DEFAULT_MAX_DOWNLOAD_INDEX` - Maximum index to download (default: 1,000,000)
 - `CSV_FILE_PATH` - Output CSV file location
-- `PROGRESS_FILE_PATH` - Progress tracking file location
+- `PROGRESS_FILE_PATH` - Scraping progress tracking file location
+- `DOWNLOAD_PROGRESS_FILE_PATH` - Download progress tracking file location
 
 ## Output Files
 
@@ -69,9 +75,13 @@ Edit [`src/furtrack-downloader/config.py`](src/furtrack-downloader/config.py) to
   - Image URL
   - Character tags (comma-separated)
 
-- **progress.arc** - Tracks the last processed index for resume functionality
+- **progress.arc** - Tracks the last processed index for scraping resume functionality
+
+- **download_progress.arc** - Tracks the last downloaded index for download resume functionality
 
 - **furtrack_downloader.log** - Application logs with rotating file handler (5MB max per file)
+
+- **Downloaded Images** - Image files saved with index as filename, accompanied by `.txt` sidecar files containing character tags
 
 ## Project Structure
 
@@ -82,7 +92,7 @@ src/furtrack-downloader/
 ├── cli.py                   # Command-line interface
 ├── config.py                # Configuration constants
 ├── scraper.py               # Web scraping logic
-├── downloader.py            # Download functionality (WIP)
+├── downloader.py            # Download functionality
 ├── csv_handler.py           # CSV file operations
 ├── progress.py              # Progress tracking
 ├── logging_config.py        # Logging configuration
@@ -95,6 +105,7 @@ src/furtrack-downloader/
 - **beautifulsoup4** - HTML parsing
 - **selenium** - Web automation
 - **html5lib** - HTML parser for BeautifulSoup
+- **requests** - HTTP requests
 
 See [`pyproject.toml`](pyproject.toml) for complete dependency list.
 
@@ -110,18 +121,21 @@ Logs are written to `furtrack_downloader.log` with the following configuration:
 - The scraper uses an undetected Chrome driver to avoid detection
 - Images are disabled during scraping to reduce load times
 - Random delays between requests are implemented for politeness
-- Progress is saved automatically after each successful scrape
+- Progress is saved automatically after each successful scrape or download
+- The downloader extracts image data using Selenium's canvas API
+- Automatic retry logic with driver restart on connection failures
+- Sidecar text files store character tags alongside downloaded images
 
 ## Status
 
 - ✅ Web scraping
 - ✅ Progress tracking
 - ✅ CSV export
-- ⏳ Image downloader (in development)
+- ✅ Image downloader
 
 ## License
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
